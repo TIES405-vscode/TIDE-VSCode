@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TaskSet } from '../../common/types'
+  import type { TaskSet } from '../../../src/common/types'
 
   interface Props {
     taskset: TaskSet;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Course, CourseStatus } from '../../common/types'
+  import type { Course, CourseStatus } from '../../../src/common/types'
   import Menu from './Menu.svelte'
   import MenuItem from './MenuItem.svelte'
   import TasksetTableRow from './TasksetTableRow.svelte'
@@ -55,7 +55,7 @@
     </Menu>
   </header>
   <div>
-    <a class="link" href={'https://tim.jyu.fi/view/' + course.path}>Open material page</a>
+    <a class="link" href={'http://localhost/view/' + course.path}>Open material page</a>
   </div>
   <button
     class="expand-collapse-button"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TaskPoints } from '../../common/types'
+  import type { TaskPoints } from '../../../src/common/types'
 
   interface Props {
     taskPoints: TaskPoints;

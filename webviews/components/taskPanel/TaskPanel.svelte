@@ -148,7 +148,7 @@ This component manages the display of task information and interaction with task
     </div>
 
     <div>
-      <a href={'https://tim.jyu.fi/view/' + timData.path}>Open the exercise in TIM</a>
+      <a href={'http://localhost/view/' + timData.path}>Open the exercise in TIM</a>
     </div>
 
     <hr />
