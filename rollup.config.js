@@ -2,10 +2,11 @@ import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser'
-import sveltePreprocess from 'svelte-preprocess'
+import { sveltePreprocess } from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
 import path from 'path'
 import fs from 'fs'
+import postcss from 'rollup-plugin-postcss'
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -28,10 +29,13 @@ export default fs.readdirSync(path.join(__dirname, 'webviews', 'pages')).map((in
 				// we'll extract any component CSS out into
 				// a separate file - better for performance
 				//css: (css) => {
-				//	css.write(name + ".css");
+				//	css.write(name + '.css')
 				//},
-				emitCss: false, // Disable emitting CSS to external file
+				//emitCss: true, // Disable emitting CSS to external file
 				preprocess: sveltePreprocess(),
+			}),
+			postcss({
+				extract: true,
 			}),
 
 			// If you have external dependencies installed from

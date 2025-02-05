@@ -17,8 +17,19 @@
   } from '../../../src/common/types'
   import PointsDisplay from './PointsDisplay.svelte'
 
-  let timData: TimData = $state()
-  let loginData: LoginData = $state()
+  let timData: TimData = $state({
+    doc_id: 0,
+    header: undefined,
+    ide_task_id: '',
+    max_points: null,
+    path: '',
+    stem: undefined,
+    task_files: [],
+    type: ''
+  })
+  let loginData: LoginData = $state({
+    isLogged: false
+  })
   let isLoggedIn = $state(false)
   let workspace: string = $state('')
   let taskPoints: TaskPoints = $state({ current_points: undefined })
@@ -47,7 +58,9 @@
           break
         }
         case 'SubmitResult': {
-          onTaskSubmitted(message.value)
+          // Todo: This tries to show points, but it's not yet implemented
+          onTaskSubmitted()
+          console.log(message.value)
           break
         }
       }

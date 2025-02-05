@@ -11,7 +11,9 @@
   import { onMount } from 'svelte'
   import { type LoginData } from '../../../src/common/types'
   let isLoggedIn = $state(false)
-  let loginData: LoginData = $state()
+  let loginData: LoginData = $state({
+    isLogged: false
+  })
 
   /**
    * Listens to messages from the extension.

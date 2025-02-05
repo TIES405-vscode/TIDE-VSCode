@@ -15,7 +15,9 @@
 
   let downloadPath: string = $state('')
   let courses: Array<Course> = $state([])
-  let loginData: LoginData = $state()
+  let loginData: LoginData = $state({
+    isLogged: false
+  })
   let isLoggedIn: boolean = $derived(loginData?.isLogged ?? false)
   let coursesRefreshing: boolean = $state(false)
 

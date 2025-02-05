@@ -47,6 +47,8 @@ or opening workspaces.
   {/each}
 {/if}
 
+
+
 <style>
   :global(body) {
     margin-bottom: 2.5rem;
