@@ -92,7 +92,7 @@ suite('ExtensionStateManager Test Suite', () =>
         ]
 
         ExtensionStateManager.setCourses(testCourses) // testing the set method
-        const retrievedCourses = ExtensionStateManager.getCourses() // testing the get method
-        assert.deepStrictEqual(testCourses, retrievedCourses, 'Courses should match the stored value')
+        const expectedCourses = ExtensionStateManager.getCourses() // testing the get method
+        assert.deepStrictEqual(testCourses, expectedCourses, 'Courses should match the stored value')
     })
 })
