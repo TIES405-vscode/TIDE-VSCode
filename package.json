@@ -144,9 +144,9 @@
 		"watch": "tsc -watch -p .",
 		"svelte-watch": "rollup -c -w --bundleConfigAsCjs",
 		"svelte-compile": "rollup -c --bundleConfigAsCjs",
-		"pretest": "npm run compile && npm run lint",
+		"_pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "vscode-test"
+		"test": "npm run compile && vscode-test"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "^25.0.7",
