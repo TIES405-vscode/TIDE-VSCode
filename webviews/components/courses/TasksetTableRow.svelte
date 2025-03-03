@@ -57,10 +57,7 @@
     border: none;
     text-align: center;
     padding: 8px;
-  }
-
-  #name-cell {
-    text-align: left;
+    font-size: smaller;
   }
 
   button {

@@ -112,7 +112,7 @@ export class CourseTaskProvider implements vscode.TreeDataProvider<CourseTaskTre
                         if (current.endsWith('.vscode')) {
                             // skip
                         } else {
-                            this.course_data.push(new CourseTaskTreeItem("Course: " + element, current, "dir"))
+                            this.course_data.push(new CourseTaskTreeItem(element, current, "dir"))
                             this.read_course_directory(current, this.course_data.at(-1))
                         }
                     }
