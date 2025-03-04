@@ -73,15 +73,11 @@
             <tr>
               <th>Task set</th>
               <th>Number of exercises</th>
-              <!-- <th>Deadline</th> -->
-              <!-- <th>Done</th> -->
             </tr>
           </thead>
           <tbody>
             {#each course.taskSets as taskset}
-              <tr>
-                <TasksetTableRow {taskset} {isLoggedIn} />
-              </tr>
+              <TasksetTableRow {taskset} {isLoggedIn} />
             {/each}
           </tbody>
         </table>
@@ -194,14 +190,6 @@
     background-color: rgb(25, 25, 25);;
     font-weight: normal;
     font-size: smaller;
-  }
-
-  tbody tr:nth-child(odd) {
-    background-color: #222222;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #444444;
   }
 
 </style>

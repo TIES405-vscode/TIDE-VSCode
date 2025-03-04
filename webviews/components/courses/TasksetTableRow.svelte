@@ -26,25 +26,32 @@
 
 </script>
 
-<td>
-  <button class="button-taskname" onclick={toggleDetails}>
-    <span class="button-taskname-span">{taskset.name}</span>
-    <span class="arrow {showDetails ? 'left-arrow' : 'down-arrow'}">&#8250;</span>
-  </button>
-  {#if showDetails}
-    <TasksetDetails {taskset} {isLoggedIn}/>
-{/if}
-</td>
-{#if taskset.tasks.length}
-  <td>{taskset.tasks.length}</td>
+<tr>
   <td>
-    <button onclick={downloadTaskSet}>Download taskset</button>
+    <button class="button-taskname" onclick={toggleDetails}>
+      <span class="button-taskname-span">{taskset.name}</span>
+      <span class="arrow {showDetails ? 'left-arrow' : 'down-arrow'}">&#8250;</span>
+    </button>
   </td>
-{:else}
-  <td colspan="2">Unavailable</td>
+  {#if taskset.tasks.length}
+    <td>{taskset.tasks.length}</td>
+    <td>
+      <button onclick={downloadTaskSet}>Download taskset</button>
+    </td>
+  {:else}
+    <td colspan="2">Unavailable</td>
+  {/if}
+</tr>
+{#if showDetails}
+  <TasksetDetails {taskset} {isLoggedIn}/>
 {/if}
 
 <style>
+
+  tr{
+   background: #222222
+  }
+
   td {
     border: none;
     text-align: center;
