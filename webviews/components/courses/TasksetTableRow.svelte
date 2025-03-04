@@ -22,6 +22,7 @@
 
   function toggleDetails() {
     showDetails = !showDetails
+    console.log("showDetails:", showDetails);
   }
 
 </script>
@@ -49,7 +50,8 @@
 <style>
 
   tr{
-   background: #222222
+   background: #222222;
+   border-top: 1px solid rgb(25, 25, 25);
   }
 
   td {
@@ -57,7 +59,7 @@
     text-align: center;
     vertical-align: top;
     padding: 8px;
-    color: rgb(197, 197, 197);
+    color: rgb(195, 195, 195);
     font-size: 14px;
   }
 

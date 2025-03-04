@@ -10,28 +10,24 @@
 
 </script>
 
-<tr class="task-details-row">
+<tr class="task-details">
     <td colspan="4">
         <table class="task-details-table">
-        <caption>Details</caption>
         <thead>
             <tr>
             <th>Task</th>
-            <!-- <th>Points</th> -->
-            <!-- <th>Deadline</th> -->
-            <!-- <th>Status</th> -->
             <th>Points</th>
             <th>Deadline</th>
-            <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>placeholder</td>
-                <td>placeholder</td>
-                <td>placeholder</td>
-                <td>placeholder</td>
-            </tr>
+            {#each taskset.tasks as task}
+                <tr class="details-row">
+                    <td>{task.ide_task_id}</td>
+                    <td>placeholder</td>
+                    <td>placeholder</td>
+                </tr>
+            {/each}
         </tbody>
         </table>
     </td>
@@ -39,8 +35,9 @@
 
 <style>
 
-.task-details-row{
-    background: #333333;
+.task-details{
+    background:rgb(44, 44, 44);
+    border-top: 1px solid rgb(25, 25, 25);
 }
 
 td {
@@ -56,12 +53,11 @@ td {
 .task-details-table{
     margin-left: 7rem;
     width: 60%;
-    table-layout: fixed
+    table-layout: fixed;
 }
 
-caption{
-    text-align: left;
-    margin-top: 8px;
+.task-details-table th{
+    font-weight: normal;
 }
 
 </style>

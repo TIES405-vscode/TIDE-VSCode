@@ -73,6 +73,7 @@
             <tr>
               <th>Task set</th>
               <th>Number of exercises</th>
+              <!-- <th>Status</th> -->
             </tr>
           </thead>
           <tbody>
