@@ -57,6 +57,9 @@
     border: none;
     text-align: center;
     padding: 8px;
+  }
+
+  #name-cell {
     font-size: smaller;
   }
 
