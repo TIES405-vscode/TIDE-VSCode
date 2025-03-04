@@ -60,7 +60,7 @@ or opening workspaces.
     cursor: pointer;
     border: none;
     background: none;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
     margin-top: 1.5rem;
     padding: 0;

@@ -155,19 +155,6 @@ export default class CoursePanel {
           Tide.downloadTaskSet(taskSetPath)
           break
         }
-        case 'OpenWorkspace': {
-          const tasksetPath = msg.value;
-          //check that the local folder exists
-          if (!fs.existsSync(tasksetPath)) {
-            vscode.window.showErrorMessage(`Path does not exist: ${tasksetPath} \n Please download the taskset` );
-              this.panel.webview.postMessage({
-              type: 'WorkspaceError',
-            });
-            return;
-          }
-          vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(tasksetPath))
-          break
-        }
         case 'RequestLoginData': {
           this.sendLoginData(ExtensionStateManager.getLoginData())
           break

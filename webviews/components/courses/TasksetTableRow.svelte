@@ -7,6 +7,7 @@
   }
 
   let { taskset, isLoggedIn }: Props = $props();
+  let showDetails: boolean = $state(false);
 
   /**
    * Initiates the download of a task set identified by its path.
@@ -18,35 +19,25 @@
     })
   }
 
-  /**
-   * Opens a workspace for the specified task set.
-   */
-  function openWorkspace() {
-    tsvscode.postMessage({
-      type: 'OpenWorkspace',
-      value: taskset.downloadPath,
-    })
-    window.addEventListener('message', (event) => {
-      const message = event.data;
-
-      if (message.type === 'WorkspaceError') {
-        taskset.downloadPath = undefined;
-      }
-    });
+  function toggleDetails() {
+    showDetails.set(!showDetails);  
   }
+
 </script>
 
-<td id="name-cell">{taskset.name}</td>
-
+<td>
+  <button class="button-taskname" onclick={toggleDetails}>
+    <span class="button-taskname-span">{taskset.name}</span>
+    <span class="arrow {showDetails ? 'left-arrow' : 'down-arrow'}">&#8250;</span>
+  </button>
+  {#if showDetails}
+    <p>placeholder</p>
+  {/if}
+</td>
 {#if taskset.tasks.length}
   <td>{taskset.tasks.length}</td>
-  <!-- <td>6/8</td> -->
   <td>
-    {#if taskset.downloadPath === undefined}
-      <button onclick={downloadTaskSet}>Download taskset</button>
-    {:else}
-      <button onclick={openWorkspace}>Open in workspace</button>
-    {/if}
+    <button onclick={downloadTaskSet}>Download taskset</button>
   </td>
 {:else}
   <td colspan="2">Unavailable</td>
@@ -57,10 +48,8 @@
     border: none;
     text-align: center;
     padding: 8px;
-  }
-
-  #name-cell {
-    font-size: smaller;
+    color: rgb(197, 197, 197);
+    font-size: 14px;
   }
 
   button {
@@ -76,4 +65,35 @@
   button:hover {
     background-color:rgb(0, 83, 138);
   }
+
+  .button-taskname {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    background-color: transparent;
+    color: rgb(197, 197, 197);
+  }
+
+  .button-taskname-span{
+    font-size: 14px;
+  }
+
+  .button-taskname:hover{
+    background-color: transparent;
+  }
+
+  .arrow {
+    margin-left: 2px;
+    transition: transform 0.3s ease;
+  }
+
+  .left-arrow {
+    transform: rotate(90deg);
+  }
+
+  .down-arrow {
+    transform: rotate(0deg);
+  }
+
 </style>

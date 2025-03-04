@@ -149,7 +149,6 @@ export type MessageType =
   | 'OnError'
   | 'OnInfo'
   | 'OpenSettings'
-  | 'OpenWorkspace'
   | 'RefreshCourseData'
   | 'RequestLoginData'
   | 'ResetExercise'
