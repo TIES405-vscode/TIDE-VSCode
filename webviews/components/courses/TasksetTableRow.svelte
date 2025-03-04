@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { TaskSet } from '../../../src/common/types'
+  import TasksetDetails from './TasksetDetails.svelte'
 
   interface Props {
     taskset: TaskSet;
@@ -31,8 +32,8 @@
     <span class="arrow {showDetails ? 'left-arrow' : 'down-arrow'}">&#8250;</span>
   </button>
   {#if showDetails}
-    <p>placeholder</p>
-  {/if}
+    <TasksetDetails {taskset} {isLoggedIn}/>
+{/if}
 </td>
 {#if taskset.tasks.length}
   <td>{taskset.tasks.length}</td>
@@ -47,6 +48,7 @@
   td {
     border: none;
     text-align: center;
+    vertical-align: top;
     padding: 8px;
     color: rgb(197, 197, 197);
     font-size: 14px;
