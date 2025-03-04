@@ -86,9 +86,6 @@
           </tbody>
         </table>
       </div>
-      <div class="task-details">
-        <p>Task set details</p>
-      </div>
     </div>
   {/if}
 </div>
@@ -205,9 +202,6 @@
 
   tbody tr:nth-child(even) {
     background-color: #444444;
-  }
-
-  .task-details {
   }
 
 </style>

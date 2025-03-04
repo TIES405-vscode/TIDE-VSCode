@@ -20,7 +20,7 @@
   }
 
   function toggleDetails() {
-    showDetails.set(!showDetails);  
+    showDetails = !showDetails
   }
 
 </script>
