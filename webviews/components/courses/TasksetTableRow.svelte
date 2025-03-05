@@ -22,10 +22,15 @@
 
   function toggleDetails() {
     showDetails = !showDetails
-    console.log("showDetails:", showDetails);
   }
 
 </script>
+
+<!--
+@component
+This component creates a row in a table containing information about task set. 
+Enables downloading task set.  
+-->
 
 <tr>
   <td>
@@ -43,6 +48,7 @@
     <td colspan="2">Unavailable</td>
   {/if}
 </tr>
+
 {#if showDetails}
   <TasksetDetails {taskset} {isLoggedIn}/>
 {/if}

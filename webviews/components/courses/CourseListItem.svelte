@@ -38,6 +38,11 @@
   
 </script>
 
+<!--
+@component
+This component creates displays for individual courses.  
+-->
+
 <div class="course-box">
   <header>
     <p class="course-title">{course.name}</p>

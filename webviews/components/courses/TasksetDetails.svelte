@@ -10,22 +10,27 @@
 
 </script>
 
+<!--
+@component
+This component creates a nested table that displays information 
+about indivitual tasks in task set. Visibility is toggled by TasksetTableRow.
+TODO: display deadline of task once TIM provides the data to TIDE-CLI
+-->
+
 <tr class="task-details">
-    <td colspan="4">
+    <td colspan="3">
         <table class="task-details-table">
         <thead>
             <tr>
-            <th>Task</th>
-            <th>Points</th>
-            <th>Deadline</th>
+                <th>Task</th>
+                <th>Deadline</th>
             </tr>
         </thead>
         <tbody>
             {#each taskset.tasks as task}
                 <tr class="details-row">
                     <td>{task.ide_task_id}</td>
-                    <td>placeholder</td>
-                    <td>placeholder</td>
+                    <td>-</td>
                 </tr>
             {/each}
         </tbody>
@@ -42,22 +47,25 @@
 
 td {
     border: none;
-    text-align: left;
+    text-align: center;
     vertical-align: top;
-    padding-left: 0px;
-    padding-right: 8px;
+    padding: 0px;
     color: rgb(197, 197, 197);
     font-size: 14px;
   }
 
 .task-details-table{
-    margin-left: 7rem;
-    width: 60%;
+    width: 100%;
     table-layout: fixed;
 }
 
 .task-details-table th{
     font-weight: normal;
 }
+
+.task-details-table td {
+    border-top: 1px solid rgb(32, 32, 32);
+}
+
 
 </style>
