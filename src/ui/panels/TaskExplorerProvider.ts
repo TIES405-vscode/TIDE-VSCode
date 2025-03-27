@@ -220,16 +220,19 @@ export class CourseTaskProvider implements vscode.TreeDataProvider<CourseTaskTre
      * @returns a vscode.TreeItem that can be shown in a treeview component
      */
     public getTreeItem(item: CourseTaskTreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
+
         let title = item.label? item.label.toString() : ""
         let result = new vscode.TreeItem(title, item.collapsibleState)
-        let iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-red.svg')
+        let iconPath = ''
+
+        // File icon logic
         if (item.type == 'file') {
             // Find the names of the tasks ide_task_id and the task set from the files path
             let itemPath = item.path
             let pathSplit = itemPath.split(path.sep)
             // ide_task_id
             let id = pathSplit.at(-2)
-            // task set name
+            // taskSet(demo) name
             let demo = pathSplit.at(-3)
 
             // Find the points data of this task file from ExtensionStateManager
@@ -259,14 +262,44 @@ export class CourseTaskProvider implements vscode.TreeDataProvider<CourseTaskTre
                             }
                         }
                     }
+                } else {
+                    // Add a description for files that aren't a part of a Tide-Course
+                    result.description = "Not a Tide-Course file!"
+                    iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-warning.svg')
                 }
             } else {
                 vscode.window.showErrorMessage("Error parsing task path!")
             }
         } else {
-            // Write directory icon logic here
-            iconPath = ""
+            // Directory icon logic
 
+            // Checks if the treeItem is a part of a Tide-Course
+            const dirCheck = this.isCourseDir(item.label)
+
+            // Calculate correct icon for Tide-Course directories
+            if (dirCheck) {
+                // Calculate taskMaxPoints sum for tasks in this directory
+                let taskMaxPointsForDir = this.calculateTaskMaxPoints(item, 0)
+
+                // Calculate currentPoints sum for tasks in this directory
+                let currentPointsForDir = this.calculateCurrentPoints(item, 0)
+
+                if (taskMaxPointsForDir > 0) {
+                    if (taskMaxPointsForDir == currentPointsForDir) {
+                        iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-green.svg')
+                    } else if (currentPointsForDir > 0) {
+                        iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-yellow.svg')
+                    } else {
+                        iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-red.svg') 
+                    }
+                } else {
+                    iconPath = ""
+                }
+            } else {
+                // No icon and a warning for directories that aren't a part of a Tide-Course
+                iconPath = iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-warning.svg')
+                result.description = "Not a Tide-Course directory!"
+            }
             // Calculate taskMaxPoints sum for tasks in this directory
             let taskMaxPointsForDir = this.calculateTaskMaxPoints(item, 0)
 
@@ -281,8 +314,6 @@ export class CourseTaskProvider implements vscode.TreeDataProvider<CourseTaskTre
                 } else {
                     iconPath = path.join(__filename, '..', '..', '..', '..', 'media', 'status-red.svg') 
                 }
-            } else {
-                iconPath = ""
             }
         }
         result.command = {
@@ -291,6 +322,41 @@ export class CourseTaskProvider implements vscode.TreeDataProvider<CourseTaskTre
             arguments: [item],
         }
         result.iconPath = iconPath
+        return result
+    }
+
+    /**
+     * Checks if the treeItem is a part of a Tide-Course
+     * @param label is used to find a connection to a Tide-Course
+     * @returns True if the directory label is a part of a Tide-Course, False otherwise
+     */
+    public isCourseDir(label: string | vscode.TreeItemLabel | undefined): boolean {
+        let labelString = label?.toString()
+        
+        let result = false
+
+        if (!labelString) {
+            return result
+        }
+        
+        // Edit the root directories to 
+        if (labelString.includes("Course: ")) {
+            labelString = labelString.replace("Course: ","")
+        }
+
+        // Search TimData for the directory name in ide_task_id or path
+        const timData = ExtensionStateManager.getTimData()
+
+        timData.forEach(element => {
+            if (element.ide_task_id === labelString) {
+                result = true
+            }
+            const pathParts = element.path.split(path.posix.sep)
+            if (pathParts.includes(labelString)) {
+                result = true
+            }
+        })
+
         return result
     }
 
