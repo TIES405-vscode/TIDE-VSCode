@@ -18,6 +18,7 @@ import path from 'path'
 import * as fs from 'fs'
 
 export default class ExtensionStateManager {
+
   private static globalState: vscode.Memento & {
     setKeysForSync(keys: readonly string[]): void
   }
@@ -42,6 +43,24 @@ export default class ExtensionStateManager {
    */
   public static getCourses(): Array<Course> {
     return this.readFromGlobalState(StateKey.Courses)
+  }
+
+  /**
+   * Finds a course with the given path as a path of one of its taskSets
+   * @param taskSetPath
+   * @returns the course with the given taskSetPath as a path of one of its taskSets, if it's not found, return undefined
+   */
+  public static findCourse(taskSetPath: string): Course | undefined{
+    let foundCourse: Course | undefined = undefined
+    const extensionCourseData = ExtensionStateManager.getCourses()
+    extensionCourseData.forEach(course => {
+      course.taskSets.forEach(task => {
+        if (task.path === taskSetPath) {
+          foundCourse = course
+        }
+      })
+    })
+    return foundCourse
   }
 
   /**
@@ -205,7 +224,7 @@ export default class ExtensionStateManager {
           })
         })          
     } catch (err) {
-        console.log(err)
+      console.log(err)
     }
   }
 
@@ -261,7 +280,7 @@ export default class ExtensionStateManager {
    */
   static getTaskTimData(demoName: string, taskId: string): TimData | undefined{
     let timData = undefined
-    const allTimData: Array<TimData> = this.readFromGlobalState(StateKey.TimData)
+    const allTimData: Array<TimData> = this.getTimData()
     allTimData.forEach(element => {
       // Find a timdata object with the given taskId
       if (element.ide_task_id === taskId) {

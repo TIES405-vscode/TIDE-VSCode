@@ -13,6 +13,7 @@ import { getDefaultHtmlForWebview, getWebviewOptions } from '../utils'
 import { Course, LoginData, WebviewMessage } from '../../common/types'
 import Tide from '../../api/tide'
 import UiController from '../UiController'
+import path from 'path'
 
 export default class CoursePanel {
   public static currentPanel: CoursePanel | undefined
@@ -171,9 +172,25 @@ export default class CoursePanel {
             // Download a new Task Set
             await Tide.downloadTaskSet(taskSetPath)
 
-            // Update TimData with the newly written data
-            ExtensionStateManager.updateTimData(taskSetPath)
+            const extensionCourseData: Array<Course> = ExtensionStateManager.getCourses()
 
+            // Find course.tasksets[index].path
+            
+            
+            // const newCourse = extensionCourseData.find(course => course.taskSets[0].path === taskSetPath)
+
+            // Update TimData with the newly written data
+            let newCourse = ExtensionStateManager.findCourse(taskSetPath)
+            /* if (newCourse) {
+              const pathToTimData = newCourse.taskSets[0].path.split(path.posix.sep).at(-2)
+              if (pathToTimData) {
+                ExtensionStateManager.updateTimData(pathToTimData)
+              }              
+            } */
+
+              if (newCourse) {
+                  ExtensionStateManager.updateTimData(newCourse.taskSets[0].path)
+              }
             // Get TimData for reading
             const dataPromise = ExtensionStateManager.getTimData()
 
