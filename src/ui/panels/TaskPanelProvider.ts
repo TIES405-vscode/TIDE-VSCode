@@ -87,8 +87,6 @@ export class TaskPanelProvider implements vscode.WebviewViewProvider {
 
     private async getTaskPoints(){
         const timData = await this.getTimData()
-        Logger.debug("TaskPanelProvider getTaskPoints")
-        Logger.debug(timData)
         if (timData?.path && timData?.ide_task_id) {
             this.sendTaskPoints(ExtensionStateManager.getTaskPoints(timData.path, timData.ide_task_id))
         }
