@@ -118,7 +118,6 @@ export default class ExtensionStateManager {
   }
 
   static setTaskPoints(taskSetPath: string, ideTaskId: string, taskPoints: TaskPoints) {
-    Logger.debug(`Saving task points for ${taskSetPath} ${ideTaskId}`, taskPoints)
     // TODO: This could be a hashmap
     let taskPointsData = this.readFromGlobalState(StateKey.TaskPoints)
     if (taskPointsData === undefined) {
