@@ -69,9 +69,6 @@ export class TaskPanelProvider implements vscode.WebviewViewProvider {
             case 'RequestLoginData':
                 this.sendLoginData()
                 break
-            case 'UpdateTaskPoints':
-                Tide.getTaskPoints(msg.value.taskSetPath, msg.value.ideTaskId, this.sendTaskPoints.bind(this))
-                break
             case 'CustomUrl':
                 this.sendCustomUrl()
                 break
