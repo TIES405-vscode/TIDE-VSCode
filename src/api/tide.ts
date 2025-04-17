@@ -29,15 +29,21 @@ export default class Tide {
    */
   public static async login(): Promise<LoginData> {
     let loginData = { isLogged: false }
-    await this.runAndHandle(['login', '--json'], (data: string) => {
-      const jsonStart = data.indexOf('{')
-      const jsonString = data.slice(jsonStart)
-      const parsedData = JSON.parse(jsonString)
-      loginData = { isLogged: parsedData['login_success'] }
-      if (!loginData.isLogged) {
-        UiController.showError('Login failed.')
-      }
-    })
+
+    try {
+      await this.runAndHandle(['login', '--json'], (data: string) => {
+        const jsonStart = data.indexOf('{')
+        const jsonString = data.slice(jsonStart)
+        const parsedData = JSON.parse(jsonString)
+        loginData = { isLogged: parsedData['login_success'] }
+        if (!loginData.isLogged) {
+          UiController.showError('Login failed.')
+        }
+      })
+    } catch (error) {
+      Logger.error('Error while logging in: ' + error)
+      UiController.showError('Login failed.')
+    }
     return loginData
   }
 
@@ -45,9 +51,14 @@ export default class Tide {
    * Executes tide logout command.
    */
   public static async logout(): Promise<LoginData> {
-    await this.runAndHandle(['logout'], (data: string) => {
-      Logger.info(`Logout: ${data}`)
-    })
+    try {
+      await this.runAndHandle(['logout'], (data: string) => {
+        Logger.info(`Logout: ${data}`)
+      })
+    } catch (error) {
+      Logger.error('Error while logging out: ' + error)
+      UiController.showError('Logout failed.')
+    }
     return { isLogged: false }
   }
 
@@ -57,10 +68,16 @@ export default class Tide {
    */
   public static async checkLogin(): Promise<UserData> {
     let loggedInUserData: UserData = { logged_in: null}
-    await this.runAndHandle(['check-login', '--json'], (data: string) => {
+    try {
+      await this.runAndHandle(['check-login', '--json'], (data: string) => {
       Logger.info(`Login data: ${data}`)
       loggedInUserData = JSON.parse(data)
-    })
+      })
+    }
+    catch (error) {
+      Logger.error('Error while checking login: ' + error)
+      UiController.showError('Login check failed.')
+    }
     return loggedInUserData
   }
 
@@ -70,9 +87,15 @@ export default class Tide {
    */
   public static async getCourseList(): Promise<Array<Course>> {
     let courses: Array<Course> = []
-    await this.runAndHandle(['courses', '--json'], async (data: string) => {
-      courses = await parseCoursesFromJson(data)
-    })
+    try {
+      await this.runAndHandle(['courses', '--json'], async (data: string) => {
+        courses = await parseCoursesFromJson(data)
+      })
+    }
+    catch (error) {
+      Logger.error('Error while fetching courses: ' + error)
+      UiController.showError('Failed to fetch courses.')
+    }
     return courses
   }
 
@@ -86,13 +109,19 @@ export default class Tide {
     ignoreErrors: boolean = false,
   ): Promise<Array<Task>> {
     let tasks: Array<Task> = []
-    await this.runAndHandle(
-      ['task', 'list', taskSetPath, '--json'],
-      async (data: string) => {
-        tasks = JSON.parse(data)
-      },
-      ignoreErrors,
-    )
+    try {
+      await this.runAndHandle(
+        ['task', 'list', taskSetPath, '--json'],
+        async (data: string) => {
+          tasks = JSON.parse(data)
+        },
+        ignoreErrors,
+      )
+    }
+    catch (error) {
+      Logger.error('Error while fetching tasks: ' + error)
+      UiController.showError('Failed to fetch tasks.')
+    }
     return tasks
   }
 
@@ -101,28 +130,34 @@ export default class Tide {
    * @param {string} taskSetPath - path to task set. Path can be found by executing cli courses command
    */
   public static async downloadTaskSet(courseName:string, taskSetPath: string) {
-    const downloadPathBase: string | undefined = vscode.workspace
-      .getConfiguration()
-      .get('TIM-IDE.fileDownloadPath')
-    if (downloadPathBase === undefined) {
-      UiController.showError('Download path not set!')
-      return
-    }
+    try {
+      const downloadPathBase: string | undefined = vscode.workspace
+        .getConfiguration()
+        .get('TIM-IDE.fileDownloadPath')
+      if (downloadPathBase === undefined) {
+        UiController.showError('Download path not set!')
+        return
+      }
 
-    const taskName = path.basename(taskSetPath)
-    const localCoursePath = path.join(path.normalize(downloadPathBase), courseName)
-    const localTaskPath = path.join(path.normalize(downloadPathBase), courseName, taskName)
-    await this.runAndHandle(['task', 'create', taskSetPath, '-a', '-d', localCoursePath], (data: string) => {
-      ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, localTaskPath)
-      // TODO: --json flag is not yet implemented in cli tool 
-      // const taskCreationFeedback: TaskCreationFeedback = JSON.parse(data)
-      // if (taskCreationFeedback.success) {
-      //   ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, downloadPath)
-      // } else {
-      //   // TODO: more specific errors from cli
-      //   UiController.showError('Error downloading tasks.')
-      // }
-    })
+      const taskName = path.basename(taskSetPath)
+      const localCoursePath = path.join(path.normalize(downloadPathBase), courseName)
+      const localTaskPath = path.join(path.normalize(downloadPathBase), courseName, taskName)
+      await this.runAndHandle(['task', 'create', taskSetPath, '-a', '-d', localCoursePath], (data: string) => {
+          ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, localTaskPath)
+        // TODO: --json flag is not yet implemented in cli tool 
+        // const taskCreationFeedback: TaskCreationFeedback = JSON.parse(data)
+        // if (taskCreationFeedback.success) {
+        //   ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, downloadPath)
+        // } else {
+        //   // TODO: more specific errors from cli
+        //   UiController.showError('Error downloading tasks.')
+        // }
+      })
+    }
+    catch (error) {
+      Logger.error('Error while downloading task set: ' + error)
+      UiController.showError('Failed to download task set.')
+    }
   }
 
   /**
@@ -131,9 +166,15 @@ export default class Tide {
    * @param {string} taskSetPath - path of the task set
    */
   public static async overwriteSetTasks(taskSetPath: string) {
-    this.runAndHandle(['task', 'create', '-a', '-f', taskSetPath], (data: string) => {
-      Logger.debug(data)
-    })
+    try {
+      this.runAndHandle(['task', 'create', '-a', '-f', taskSetPath], (data: string) => {
+        Logger.debug(data)
+      })
+    }
+    catch (error) {
+      Logger.error('Error while overwriting task set: ' + error)
+      UiController.showError('Failed to overwrite task set.')
+    }
   }
 
   /**
@@ -143,12 +184,18 @@ export default class Tide {
    * @param fileLocation - path to the directory where user has loaded the task set
    */
   public static async overwriteTask(taskSetPath: string, ideTaskId: string, fileLocation: string) {
-    this.runAndHandle(
-      ['task', 'create', taskSetPath, ideTaskId, '-f', '-d', fileLocation],
-      (data: string) => {
-        Logger.debug(data)
-      },
-    )
+    try {
+      this.runAndHandle(
+        ['task', 'create', taskSetPath, ideTaskId, '-f', '-d', fileLocation],
+        (data: string) => {
+          Logger.debug(data)
+        },
+      )
+    }
+    catch (error) {
+      Logger.error('Error while overwriting task: ' + error)
+      UiController.showError('Failed to overwrite task.')
+    }
   }
 
   /**
@@ -156,10 +203,16 @@ export default class Tide {
    * @param filePath - path of the file to reset
    */
   public static async resetTask(filePath: string) {
-    vscode.commands.executeCommand('workbench.action.files.save')
-    this.runAndHandle(['task', 'reset', filePath], (data: string) => {
-      Logger.debug(data)
-    })
+    try {
+      vscode.commands.executeCommand('workbench.action.files.save')
+      this.runAndHandle(['task', 'reset', filePath], (data: string) => {
+        Logger.debug(data)
+      })
+    }
+    catch (error) {
+      Logger.error('Error while resetting task: ' + error)
+      UiController.showError('Failed to reset task.')
+    }
   }
 
   /**
@@ -168,28 +221,34 @@ export default class Tide {
    * @param {string} taskPath - path of the task
    */
   public static async submitTask(taskPath: string, callback: () => any) {
-    this.runAndHandle(['submit', taskPath], (data: string) => {
-      Logger.debug(data)
-      const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(path.dirname(taskPath)))
-      const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === path.dirname(path.dirname(taskPath)))
-      const currentDir = path.dirname(taskPath)
-      // Find the names of the tasks ide_task_id and the task set from the files path
-      let itemPath = currentDir
-      // console.log(path)
-      let pathSplit = itemPath.split(path.sep)
-      // ide_task_id
-      let id = pathSplit.at(-1)
-      // task set name
-      let demo = pathSplit.at(-2)
-      if (demo && id && taskset) {
-        const timData : TimData | undefined = ExtensionStateManager.getTaskTimData(taskset.path, demo, id)
-        if (timData) {
-          this.getTaskPoints(timData.path, timData.ide_task_id, callback);
-        } else {
-          vscode.window.showErrorMessage('TimData is undefined or invalid.');
+    try {
+      this.runAndHandle(['submit', taskPath], (data: string) => {
+        Logger.debug(data)
+        const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(path.dirname(taskPath)))
+        const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === path.dirname(path.dirname(taskPath)))
+        const currentDir = path.dirname(taskPath)
+        // Find the names of the tasks ide_task_id and the task set from the files path
+        let itemPath = currentDir
+        let pathSplit = itemPath.split(path.sep)
+        // ide_task_id
+        let id = pathSplit.at(-1)
+        // task set name
+        let demo = pathSplit.at(-2)
+        if (demo && id && taskset) {
+          const timData : TimData | undefined = ExtensionStateManager.getTaskTimData(taskset.path, demo, id)
+          if (timData) {
+            this.getTaskPoints(timData.path, timData.ide_task_id, callback);
+          } else {
+            vscode.window.showErrorMessage('TimData is undefined or invalid.');
+          }
         }
-      }
-    })
+      })
+    }
+    catch (error) {
+      Logger.error('Error while submitting task: ' + error)
+      UiController.showError('Failed to submit task.')
+    }
+
   }
 
   public static async getTaskPoints(taskSetPath: string, ideTaskId: string, callback: any) {
@@ -202,7 +261,8 @@ export default class Tide {
         vscode.commands.executeCommand('tide.refreshTree')
       })
     } catch (error) {
-      console.log('Error while fetching task points: ' + error)
+      Logger.error('Error while fetching task points: ' + error)
+      UiController.showError('Failed to fetch task points.')
     }
   }
 
@@ -216,16 +276,16 @@ export default class Tide {
     args: Array<string>,
     handler: HandlerFunction,
     ignoreErrors: boolean = false,
-  ) {
-    // this.spawnTideProcess(...args).then((data) => handler(data), (err) => UiController.showError(err))
-    const cliOutput = await this.spawnTideProcess(...args).catch((err) => {
-      if (!ignoreErrors) {
-        UiController.showError(err)
+  ): Promise<void> {
+    try {
+      const cliOutput = await this.spawnTideProcess(...args)
+      if (typeof cliOutput === 'string') {
+        await handler(cliOutput)
       }
-    })
-    if (typeof cliOutput === 'string') {
-      // !! ts lang server or eslint claims this await has no effect but it actually does !!
-      await handler(cliOutput)
+    } catch (err) {
+      if (!ignoreErrors) {
+        throw err 
+      }
     }
   }
 

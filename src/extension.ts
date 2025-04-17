@@ -35,13 +35,12 @@ export async function activate(ctx: vscode.ExtensionContext) {
   // Initialize Login and User Data
   const userData = await Tide.checkLogin()
   if (userData.logged_in) {
-            ExtensionStateManager.setLoginData({isLogged: true})
-            ExtensionStateManager.setUserData(userData)
-          } else {
-            ExtensionStateManager.setLoginData({isLogged: false})
-            ExtensionStateManager.setUserData(userData)
-          }
-  console.log(userData)
+    ExtensionStateManager.setLoginData({isLogged: true})
+    ExtensionStateManager.setUserData(userData)
+  } else {
+    ExtensionStateManager.setLoginData({isLogged: false})
+    ExtensionStateManager.setUserData(userData)
+  }
   
 
 

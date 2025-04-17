@@ -189,9 +189,7 @@ export default class CoursePanel {
             await Promise.all(dataPromise.map(async (dataObject) => {
               // Only fetch points for new tasks
               if (dataObject.path == taskSetPath && dataObject.max_points) {
-                await Tide.getTaskPoints(dataObject.path, dataObject.ide_task_id, (data: string) => {
-                  console.log(data)
-                })
+                await Tide.getTaskPoints(dataObject.path, dataObject.ide_task_id, null)
               } else if (dataObject.path == taskSetPath && dataObject.max_points == null) {
                 // Set the current points of pointsless tasks to 0 in order to avoid errors
                 ExtensionStateManager.setTaskPoints(dataObject.path, dataObject.ide_task_id, {current_points: 0})
@@ -207,7 +205,7 @@ export default class CoursePanel {
 
 
           } catch (error) {
-            console.log('Downloading a new taskset had an error: ' + error)
+            Logger.error('Downloading a new taskset had an error: ' + error)
           }
           break
         }
