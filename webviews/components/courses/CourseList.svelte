@@ -39,7 +39,12 @@ or opening workspaces.
 -->
 
 <button class="button-header" onclick={toggleExpandedState}>
+  {#if statusOfCourses === 'active'}
+  <h2 class="button-header-big">My Courses</h2>
+  {/if}
+  {#if statusOfCourses === 'hidden'}
   <span class="button-header-span">{statusOfCourses} Courses</span>
+  {/if}
   <span class="arrow {isExpanded ? 'left-arrow' : 'down-arrow'}">&#8250;</span>
 </button>
 
@@ -48,7 +53,6 @@ or opening workspaces.
     <CourseListItem {course} {isLoggedIn} {customUrl} />
   {/each}
 {/if}
-
 
 
 <style>
@@ -69,7 +73,7 @@ or opening workspaces.
     color: rgb(197, 197, 197);
   }
 
-  .button-header-span::first-letter {
+  .button-header-span::first-letter, .button-header-big::first-letter {
     text-transform: capitalize;
   }
 
