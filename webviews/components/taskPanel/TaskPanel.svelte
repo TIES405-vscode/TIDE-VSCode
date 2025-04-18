@@ -55,11 +55,6 @@
           taskPoints = message.value
           break
         }
-        case 'SubmitResult': {
-          // Todo: This tries to show points, but it's not yet implemented
-          onTaskSubmitted()
-          break
-        }
         case 'CustomUrl': {
           customUrl = ensureTrailingSlash(message.value)
           break
@@ -73,19 +68,6 @@
     return url.endsWith('/') ? url : url + '/'
   }
 
-  function onTaskSubmitted() {
-    updateTaskPoints()
-  }
-
-  function updateTaskPoints() {
-    tsvscode.postMessage({
-      type: 'UpdateTaskPoints',
-      value: {
-        taskSetPath: timData.path,
-        ideTaskId: timData.ide_task_id,
-      },
-    })
-  }
 
   run(() => {
     isLoggedIn = loginData?.isLogged ?? false
@@ -128,8 +110,6 @@ This component manages the display of task information and interaction with task
       <p>This task does not reward points.</p>
       {:else}
       <PointsDisplay {taskPoints} taskMaxPoints={timData.max_points} />
-      
-      <button onclick={updateTaskPoints}>Update points</button>
       {/if}
     </div>
 
@@ -159,23 +139,6 @@ This component manages the display of task information and interaction with task
   .task-panel a {
     margin: 0.5em 0 0.5em 0;
     font-size: small;
-  }
-
-  button {
-    background-color: #007ACC;
-    font-size: small;
-    color: white;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    border-radius: 3px;
-    width: 100%;
-    margin: 5px 0 5px 0;
-  }
-
-  button:hover {
-    background-color: #005F9E;
   }
 
   .task-panel hr {
