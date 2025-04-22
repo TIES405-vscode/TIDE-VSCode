@@ -10,9 +10,10 @@
 			"name": "Stella Palenius"
 		}
 	],
+	"repository": "https://github.com/TIES405-vscode/TIDE-VSCode",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.86.0"
+		"vscode": "^1.97.0"
 	},
 	"categories": [
 		"Other"
