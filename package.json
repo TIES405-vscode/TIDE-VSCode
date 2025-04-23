@@ -269,7 +269,10 @@
 		"rollup-plugin-svelte": "^7.2.2",
 		"svelte": "^5.19.9",
 		"svelte-preprocess": "^6.0.3",
-		"typescript": "^5.7.3",
-		"tslib": "^2.5.0"
+		"tslib": "^2.5.0",
+		"typescript": "^5.7.3"
+	},
+	"dependencies": {
+		"@vscode/vsce": "^3.3.2"
 	}
 }
