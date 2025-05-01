@@ -29,10 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
-        run: npx eslint src --ext .ts -f json -o eslint-report.json
+      - name: Run ESLint with annotations
+        run: npm run lint -- --format node_modules/eslint-formatter-unix/unix.js
       
-      - name: Annotate ESLint results
-        uses: ataylorme/eslint-annotate-action@v2
-        with:
-          report-json: eslint-report.json

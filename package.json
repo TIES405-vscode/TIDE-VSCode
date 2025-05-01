@@ -263,6 +263,7 @@
 		"@vscode/test-cli": "^0.0.10",
 		"@vscode/test-electron": "^2.5.2",
 		"eslint": "^9.25.1",
+		"eslint-formatter-unix": "^8.40.0",
 		"rollup": "^4.40.1",
 		"rollup-plugin-postcss": "^4.0.2",
 		"rollup-plugin-svelte": "^7.2.2",
