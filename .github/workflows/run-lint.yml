@@ -30,5 +30,5 @@ jobs:
         run: npm ci
 
       - name: Run ESLint with annotations
-        run: npm run lint -- --format node_modules/eslint-formatter-unix/unix.js
+        run: npm run lint -- --format unix
       
