@@ -31,7 +31,7 @@ jobs:
 
       - name: Run ESLint and output JSON report
         run: |
-          npm run lint -- --format json > eslint_report.json || true
+          npm run lint -- --format json --output-file eslint_report.json || echo "ESLint completed with warnings/errors"
       
       - name: Print ESLint report for debugging
         run: cat eslint_report.json
