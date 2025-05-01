@@ -31,7 +31,7 @@ jobs:
 
       - name: Run ESLint and output JSON report
         run: |
-          npm run lint -- --format json > eslint-report.json || true
+          npm run lint -- --format json > eslint_report.json || true
 
       - name: Annotate ESLint warnings
         uses: ataylorme/eslint-annotate-action@v2
