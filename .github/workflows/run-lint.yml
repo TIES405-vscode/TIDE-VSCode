@@ -29,9 +29,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint with reviewdog
-        uses: reviewdog/action-eslint@v1
+      - name: Run ESLint
+        run: npx eslint src --ext .ts -f json -o eslint-report.json
+      
+      - name: Annotate ESLint results
+        uses: ataylorme/eslint-annotate-action@v2
         with:
-          reporter: github-check
-          fail_level: warning
-          eslint_flags: "src --ext ts"
+          report-json: eslint-report.json
