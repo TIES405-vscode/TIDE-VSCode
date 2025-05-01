@@ -40,12 +40,13 @@ jobs:
       - name: Print ESLint report for debugging
         run: cat eslint_report.json
 
-      - name: Annotate ESLint warnings
-        uses: ataylorme/eslint-annotate-action@v2
+      - name: Annotate ESLint issues
+        uses: DerLev/eslint-annotations@v2
         with:
-          report-json: eslint_report.json
-          only-pr-files: true
-          fail-on-warning: false
-          fail-on-error: true
-          check-name: ESLint Report Analysis
-          markdown-report-on-step-summary: false
+          eslint-report: eslint_report.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          only-changed-in-pr: true
+          fail-in-pr: false
+          create-status-check: true
+          status-check-name: ESLint Annotations
+          add-notice-with-url: true
