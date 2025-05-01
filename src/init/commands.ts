@@ -41,12 +41,12 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.resetExercise', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
         vscode.window.showErrorMessage('No active file to reset.')
         return
       }
-      const doc = editor.document;
+      const doc = editor.document
       Tide.resetTask(doc.fileName)
     }),
   )
@@ -57,14 +57,14 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.restoreSubmission', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
         vscode.window.showErrorMessage('No active file to restore.')
         return
       }
-      const doc = editor.document;
+      const doc = editor.document
       const currentDir = path.dirname(doc.fileName)
-      const tasksetDir = path.dirname(path.dirname(currentDir));
+      const tasksetDir = path.dirname(path.dirname(currentDir))
       const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(currentDir))
       const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === path.dirname(currentDir))
       // Find the names of the tasks ide_task_id and the task set from the files path
@@ -77,14 +77,14 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
       if (demo && id && taskset) {
         const timData : TimData | undefined = ExtensionStateManager.getTaskTimData(taskset.path, demo, id)
         if (timData) {
-          Tide.overwriteTask(timData.path, timData.ide_task_id, tasksetDir);
+          Tide.overwriteTask(timData.path, timData.ide_task_id, tasksetDir)
         Tide.getTaskPoints(timData.path, timData.ide_task_id, (points: any) => {
           if (points !== undefined && points !== null) {
-            ExtensionStateManager.setTaskPoints(timData.path, timData.ide_task_id, points);
+            ExtensionStateManager.setTaskPoints(timData.path, timData.ide_task_id, points)
           } else {
-            vscode.window.showErrorMessage('TimData is undefined or invalid.');
+            vscode.window.showErrorMessage('TimData is undefined or invalid.')
           }
-        });
+        })
       }
     }
   }),
@@ -96,19 +96,19 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.submitTask', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
-        vscode.window.showErrorMessage('No active file to submit.');
-        return;
+        vscode.window.showErrorMessage('No active file to submit.')
+        return
       }
-      const taskPath = editor.document.uri.fsPath;
-      const callback = () => vscode.window.showInformationMessage('Task was submitted to TIM');
+      const taskPath = editor.document.uri.fsPath
+      const callback = () => vscode.window.showInformationMessage('Task was submitted to TIM')
       
       // If changes, check if user wants to save and submit task to TIM
       if (editor.document.isDirty) {
         const messageOpts: vscode.MessageOptions = {
-          "detail": "Do you wish to save the changes before submitting the task to TIM?\nUnsaved changes won't be submitted.",
-          "modal": true
+          'detail': 'Do you wish to save the changes before submitting the task to TIM?\nUnsaved changes won\'t be submitted.',
+          'modal': true
         }
         const modalOpts: string[] = [
           'Save and Submit',

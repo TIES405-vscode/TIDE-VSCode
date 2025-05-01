@@ -87,12 +87,12 @@ export default class CoursePanel {
    * @param customUrl 
    */
   private sendCustomUrl() {
-    let customUrl = vscode.workspace.getConfiguration().get("TIM-IDE.customUrl")
+    let customUrl = vscode.workspace.getConfiguration().get('TIM-IDE.customUrl')
     if (!customUrl) {
-      customUrl = "https://tim.jyu.fi/";
+      customUrl = 'https://tim.jyu.fi/'
     }
     const msg: WebviewMessage = {
-      type: "CustomUrl",
+      type: 'CustomUrl',
       value: customUrl,
     }
     this.panel.webview.postMessage(msg)
@@ -154,7 +154,7 @@ export default class CoursePanel {
           })
           // If newPath is undefined or user cancels, get the previous path from global state
           if (!newPath) {
-           const previousPath = vscode.workspace.getConfiguration().get<string>('TIM-IDE.fileDownloadPath', '');
+           const previousPath = vscode.workspace.getConfiguration().get<string>('TIM-IDE.fileDownloadPath', '')
             if (previousPath) {
               newPath = [vscode.Uri.file(previousPath)]
             }

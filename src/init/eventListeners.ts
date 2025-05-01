@@ -20,11 +20,11 @@ export function registerEventListeners(ctx: vscode.ExtensionContext) {
     if (event.affectsConfiguration('TIM-IDE.fileDownloadPath')) 
     {
       // Get the new value of fileDownloadPath
-      const newPath = vscode.workspace.getConfiguration().get('TIM-IDE.fileDownloadPath');
+      const newPath = vscode.workspace.getConfiguration().get('TIM-IDE.fileDownloadPath')
       if (typeof newPath !== 'string') 
       {
-        Logger.warning('Undefined download path');
+        Logger.warning('Undefined download path')
       }
     }
-  });
+  })
 }

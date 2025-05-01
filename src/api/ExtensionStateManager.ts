@@ -165,7 +165,7 @@ export default class ExtensionStateManager {
     if (taskset) {
         // Find the path to the new .timdata file
         if (!taskset.downloadPath) {
-            throw new Error('Download path is undefined for the task set.');
+            throw new Error('Download path is undefined for the task set.')
         }else {
           const pathToTimDataFile = path.join(path.dirname(taskset.downloadPath), '.timdata')
           ExtensionStateManager.readAndSaveTimData(pathToTimDataFile)
@@ -372,7 +372,7 @@ export default class ExtensionStateManager {
     if (!course) {
       throw new Error(`Course not found for task set path: ${taskSetPath}`)
     }
-    return course;
+    return course
   }
 
   /**
@@ -400,7 +400,7 @@ export default class ExtensionStateManager {
     if (!course) {
       throw new Error(`Course with path: ${coursePath} not found`)
     }
-    return course;
+    return course
   }
 }
 

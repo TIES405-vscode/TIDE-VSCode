@@ -30,14 +30,14 @@ export class TaskPanelProvider implements vscode.WebviewViewProvider {
             } else {
                 this.sendTimData(undefined)
             }
-        });
+        })
 
         // Listen for changes in the customUrl setting
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration('TIM-IDE.customUrl')) {
                 this.sendCustomUrl()
             }
-        });
+        })
 
         this.sendCustomUrl()
     }
@@ -51,12 +51,12 @@ export class TaskPanelProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview)
 
         webviewView.webview.onDidReceiveMessage(this.handleWebviewMessage.bind(this))
-        this.sendLoginData();
-        this.sendCustomUrl();
+        this.sendLoginData()
+        this.sendCustomUrl()
 
         vscode.commands.registerCommand('tide.setPointsUpdating', () => {
-            this.setPointsUpdating();
-        });
+            this.setPointsUpdating()
+        })
     }
 
     /**
@@ -113,18 +113,18 @@ export class TaskPanelProvider implements vscode.WebviewViewProvider {
      * Use default address "https://tim.jyu.fi/", if customUrl is empty
      */
     private sendCustomUrl() {
-        let customUrl = vscode.workspace.getConfiguration().get("TIM-IDE.customUrl")
+        let customUrl = vscode.workspace.getConfiguration().get('TIM-IDE.customUrl')
         if (!customUrl) {
-            customUrl = "https://tim.jyu.fi/";
+            customUrl = 'https://tim.jyu.fi/'
         }
-        this._view?.webview.postMessage({ type: "CustomUrl", value: customUrl})
+        this._view?.webview.postMessage({ type: 'CustomUrl', value: customUrl})
     }
 
     /**
      * Retrieves TIM data for the active text editor.
      */
     private async getTimData(): Promise<TimData | undefined> {
-        if (!TaskPanelProvider.activeTextEditor) return undefined;
+        if (!TaskPanelProvider.activeTextEditor) {return undefined}
 
         try {
             const doc = TaskPanelProvider.activeTextEditor.document

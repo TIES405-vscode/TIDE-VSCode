@@ -9,9 +9,9 @@ import ExtensionStateManager from '../api/ExtensionStateManager'
  */
 export default class AnswerLimitStatusBarItem {
     readonly name: string = 'Answer limit for current task'
-    readonly text: string = `$(alert) Limited number of submissions allowed`
+    readonly text: string = '$(alert) Limited number of submissions allowed'
     private answerLimit?: number | null
-    readonly tooltip: string = `This task can only be submitted to TIM a limited number of times.\nAfter all tries have run out, you can no longer get more points by\nsubmitting the answer to TIM.\nCheck TIM task page to see how many attempts have been used.`
+    readonly tooltip: string = 'This task can only be submitted to TIM a limited number of times.\nAfter all tries have run out, you can no longer get more points by\nsubmitting the answer to TIM.\nCheck TIM task page to see how many attempts have been used.'
     private statusBarItem: vscode.StatusBarItem
     private static activeEditor?: vscode.TextEditor
 
@@ -52,7 +52,7 @@ export default class AnswerLimitStatusBarItem {
     * Retrieves TIM data for the active text editor.
     */
     private async getTimData(): Promise<TimData | undefined> {
-        if (!AnswerLimitStatusBarItem.activeEditor) return undefined;
+        if (!AnswerLimitStatusBarItem.activeEditor) {return undefined}
 
         try {
             const doc = AnswerLimitStatusBarItem.activeEditor.document
