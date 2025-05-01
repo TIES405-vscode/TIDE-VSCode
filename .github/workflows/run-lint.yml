@@ -6,7 +6,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
+  checks: write
 
 jobs:
   eslint:
