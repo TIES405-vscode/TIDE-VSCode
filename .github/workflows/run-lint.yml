@@ -32,6 +32,9 @@ jobs:
       - name: Run ESLint and output JSON report
         run: |
           npm run lint -- --format json > eslint_report.json || true
+      
+      - name: Print ESLint report for debugging
+        run: cat eslint_report.json
 
       - name: Annotate ESLint warnings
         uses: ataylorme/eslint-annotate-action@v2
