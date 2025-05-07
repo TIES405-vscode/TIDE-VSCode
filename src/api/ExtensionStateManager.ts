@@ -263,8 +263,19 @@ export default class ExtensionStateManager {
    */
 
   static getTimDataByFilepath(taskPath: string): TimData | undefined{
+    // Convert the taskPath to URI
+    const taskPathURI = vscode.Uri.file(taskPath)
     const allTimData: Array<TimData> = this.readFromGlobalState(StateKey.TimData)
-    let timData = allTimData.find((timData) => timData.task_files.some((taskFile) => taskPath.includes(taskFile.task_directory+path.sep+taskFile.file_name)))
+    let timData = allTimData.find((data) =>
+      data.task_files.some((taskFile) => { 
+        if (taskFile.task_directory) {
+          let taskFilePathURI = vscode.Uri.file(taskFile.task_directory)
+          taskFilePathURI = vscode.Uri.joinPath(taskFilePathURI, taskFile.file_name)
+          return taskPathURI.fsPath.includes(taskFilePathURI.fsPath)
+        }
+        return false
+      })
+    )
     if (!timData) {
       const course: Course =  this.getCourseByDownloadPath(taskPath)
       const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === path.dirname(path.dirname(taskPath)))
@@ -274,10 +285,8 @@ export default class ExtensionStateManager {
       let pathSplit = itemPath.split(path.sep)
       // ide_task_id
       let id = pathSplit.at(-1)
-      // task set name
-      let demo = pathSplit.at(-2)
-      if (demo && id && taskset) {
-        timData = this.getTaskTimData(taskset.path, demo, id)
+      if (id && taskset) {
+        timData = this.getTaskTimData(taskset.path, id)
       }
     }
     return timData
@@ -303,13 +312,14 @@ export default class ExtensionStateManager {
   /**
    * Get a TimData object
    * @param taskPath Path to the task file (like 'kurssit/ties666/demot/demo-1')
-   * @param demoName Name of the Demo that the TimData task is a part of
    * @param taskId Task id of the TimData task
    * @returns a unique TimData object with the given parameters, undefined is one is not found using the given parameters
    */
-  static getTaskTimData(taskPath: string, demoName: string, taskId: string): TimData | undefined{
+  static getTaskTimData(taskPath: string, taskId: string): TimData | undefined{
     const allTimData: Array<TimData> = this.readFromGlobalState(StateKey.TimData)
-    const timData = allTimData.find((timData) => timData.path.includes(taskPath) && timData.ide_task_id === taskId)
+    const timData = allTimData.find(data => 
+      data.path.includes(taskPath) && data.ide_task_id === taskId
+    )
     return timData
   }
 
