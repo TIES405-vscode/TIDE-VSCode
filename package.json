@@ -245,9 +245,11 @@
 		"svelte-compile": "rollup -c --bundleConfigAsCjs",
 		"_pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "npm run compile && vscode-test"
+		"test": "npm run compile && vscode-test",
+		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.52.0",
 		"@rollup/plugin-commonjs": "^28.0.3",
 		"@rollup/plugin-node-resolve": "^16.0.1",
 		"@rollup/plugin-terser": "^0.4.4",
@@ -262,6 +264,7 @@
 		"@vscode/test-cli": "^0.0.10",
 		"@vscode/test-electron": "^2.5.2",
 		"eslint": "^9.25.1",
+		"playwright": "^1.52.0",
 		"rollup": "^4.40.1",
 		"rollup-plugin-postcss": "^4.0.2",
 		"rollup-plugin-svelte": "^7.2.2",
