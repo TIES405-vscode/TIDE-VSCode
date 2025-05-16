@@ -4,10 +4,10 @@ on:
   pull_request:
   push:
     branches:
-      -**
+      -'**'
 jobs:
   run-all-tests:
-    name: Run integration tests
+    name: Run vscode-test and vitest for svelte-files
     runs-on: ubuntu-latest
 
     steps:
@@ -30,5 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
+      - name: Run vscode-test
         run: xvfb-run -a npm run test
+      
+      - name: Run vitest for svelte-files
+        run: xvfb-run -a npm run test:svelte
