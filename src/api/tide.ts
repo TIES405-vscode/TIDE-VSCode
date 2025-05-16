@@ -192,6 +192,7 @@ export default class Tide {
           Logger.debug(data)
         },
       )
+      Logger.info("Current task now matches to the latest submission in TIM.")
     }
     catch (error) {
       Logger.error('Error while overwriting task: ' + error)
@@ -204,10 +205,12 @@ export default class Tide {
    * @param filePath - path of the file to reset
    */
   public static async resetTask(filePath: string) {
+    Logger.info("Resetting current task...")
     try {
       vscode.commands.executeCommand('workbench.action.files.save')
       this.runAndHandle(['task', 'reset', filePath], (data: string) => {
         Logger.debug(data)
+        Logger.info("Current task has been reset.")
       })
     }
     catch (error) {

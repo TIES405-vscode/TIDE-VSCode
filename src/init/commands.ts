@@ -67,6 +67,7 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
         vscode.window.showErrorMessage('No active file to synchronize.')
         return
       }
+      Logger.info("Synchronizing the current task to the last submission in TIM...")
       const doc = editor.document;
       const currentDir = path.dirname(doc.fileName)
       const tasksetDir = path.dirname(path.dirname(currentDir))
