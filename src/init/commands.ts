@@ -42,16 +42,16 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.resetExercise', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
         vscode.window.showErrorMessage('No active file to reset.')
         return
       }
-      const doc = editor.document
-      const currentDir = path.dirname(doc.fileName)
-      const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(currentDir))
-      if (course){
-        Tide.resetTask(doc.fileName)
+      const filePath = editor.document.uri.fsPath
+      // Need to format here?
+      const timData : TimData | undefined = ExtensionStateManager.getTimDataByFilepath(filePath)
+      if (timData) {
+        Tide.resetTask(filePath)
       }
     }),
   )
@@ -62,35 +62,28 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.synchronizeSubmission', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
         vscode.window.showErrorMessage('No active file to synchronize.')
         return
       }
-      const doc = editor.document;
-      const currentDir = path.dirname(doc.fileName)
-      const tasksetDir = path.dirname(path.dirname(currentDir))
-      const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(currentDir))
-      const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === Formatting.normalizePath(path.dirname(currentDir)))
-      // Find the names of the tasks ide_task_id and the task set from the files path
-      let itemPath = currentDir
-      let pathSplit = itemPath.split(path.sep)
-      // ide_task_id
-      let id = pathSplit.at(-1)
-      // task set name
-      let demo = pathSplit.at(-2)
-      if (demo && id && taskset) {
-        const timData : TimData | undefined = ExtensionStateManager.getTaskTimData(taskset.path, demo, id)
-        if (timData) {
-          Tide.overwriteTask(timData.path, timData.ide_task_id, tasksetDir);
-        Tide.getTaskPoints(timData.path, timData.ide_task_id, (points: any) => {
-          if (points !== undefined && points !== null) {
-            ExtensionStateManager.setTaskPoints(timData.path, timData.ide_task_id, points);
-          } else {
-            vscode.window.showErrorMessage('TimData is undefined or invalid.');
-          }
-        });
+      // TODO: need to format here?
+      const filePath = editor.document.uri.fsPath
+      const course = ExtensionStateManager.getCourseByFilePath(filePath)
+      if (!course) {
+        return
       }
+      const timData : TimData | undefined = ExtensionStateManager.getTimDataByFilepath(filePath)
+      if (timData) {
+        const pathToTimData = path.join(vscode.workspace.getConfiguration().get('TIM-IDE.fileDownloadPath') ?? '', course.name)
+        Tide.overwriteTask(timData.path, timData.ide_task_id, pathToTimData.toLowerCase())
+        Tide.getTaskPoints(timData.path, timData.ide_task_id, (points: any) => {
+        if (points !== undefined && points !== null) {
+          ExtensionStateManager.setTaskPoints(timData.path, timData.ide_task_id, points)
+        } else {
+          vscode.window.showErrorMessage('TimData is undefined or invalid.')
+        }
+      })
     }
   }),
   )
@@ -101,25 +94,26 @@ export function registerCommands(ctx: vscode.ExtensionContext) {
    */
   ctx.subscriptions.push(
     vscode.commands.registerCommand('tide.submitTask', async () => {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor
       if (!editor) {
-        vscode.window.showErrorMessage('No active file to submit.');
-        return;
-      }
-      const doc = editor.document
-      const currentDir = path.dirname(doc.fileName)
-      const course: Course =  ExtensionStateManager.getCourseByDownloadPath(path.dirname(currentDir))
-      if (!course){
+        vscode.window.showErrorMessage('No active file to submit.')
         return
       }
-      const taskPath = editor.document.uri.fsPath;
-      const callback = () => vscode.window.showInformationMessage('Task was submitted to TIM');
+      // TODO: Need to format here?
+      const filePath = editor.document.uri.fsPath
+      const course = ExtensionStateManager.getCourseByFilePath(filePath)
+      if (!course) {
+        return
+      }
+      
+      const taskPath = editor.document.uri.fsPath
+      const callback = () => vscode.window.showInformationMessage('Task was submitted to TIM')
       
       // If changes, check if user wants to save and submit task to TIM
       if (editor.document.isDirty) {
         const messageOpts: vscode.MessageOptions = {
-          "detail": "Do you wish to save the changes before submitting the task to TIM?",
-          "modal": true
+          'detail': 'Do you wish to save the changes before submitting the task to TIM?',
+          'modal': true
         }
         const modalOpts: string[] = [
           'Save and Submit',

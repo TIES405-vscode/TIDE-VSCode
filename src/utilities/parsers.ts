@@ -23,6 +23,7 @@ export async function parseCoursesFromJson(data: string): Promise<Array<Course>>
               ...t,
               tasks,
               downloadPath: undefined,
+              timdataPath: undefined,
             }
           }),
         ),

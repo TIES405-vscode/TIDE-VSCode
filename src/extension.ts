@@ -68,6 +68,23 @@ export async function activate(ctx: vscode.ExtensionContext) {
   // Creates and registers taskbar item for displaying answer_limit warnings
   const answerLimitStatusBarItem = new AnswerLimitStatusBarItem(vscode.StatusBarAlignment.Right, 500)
   ctx.subscriptions.push(answerLimitStatusBarItem)
+
+
+  vscode.window.onDidChangeActiveTextEditor(editor => {
+    const fileName = editor?.document?.fileName || ''
+    const TimData = ExtensionStateManager.getTimDataByFilepath(fileName)
+    if (TimData) {
+      // If it turns out there is a possibility of more than 1 task_file, refactor this to take it into account!
+      let suplementaryFiles = TimData.supplementary_files
+      if (suplementaryFiles.some(suplementaryFile => fileName.includes(suplementaryFile.file_name))) {
+        vscode.commands.executeCommand('setContext', 'tide.exerciseActive', false)
+      }else {
+        vscode.commands.executeCommand('setContext', 'tide.exerciseActive', true)
+      }
+    }else {
+      vscode.commands.executeCommand('setContext', 'tide.exerciseActive', false)
+    }
+  })
 }
 
 // This method is called when your extension is deactivated

@@ -153,18 +153,28 @@ This component manages the display of task information and interaction with task
     <hr />
 
     <div class="points-section">
-      {#if timData.max_points == undefined}
+      {#if timData.max_points == undefined && taskPoints.current_points == 0}
       <p>This task does not reward points.</p>
+      {:else if timData.max_points}
+        <PointsDisplay {taskPoints} taskMaxPoints={timData.max_points} />
+        <LoaderButton
+          class="loader-button-blue"
+          text="Update points"
+          textWhileLoading="Updating"
+          loading={pointsUpdating}
+          onClick={updateTaskPoints}
+          title="Click to fetch the latest points from TIM"
+        />
       {:else}
-      <PointsDisplay {taskPoints} taskMaxPoints={timData.max_points} />
-      <LoaderButton
-        class="loader-button-blue"
-        text="Update points"
-        textWhileLoading="Updating"
-        loading={pointsUpdating}
-        onClick={updateTaskPoints}
-        title="Click to fetch the latest points from TIM"
-      />
+        <PointsDisplay {taskPoints} taskMaxPoints={null} />
+        <LoaderButton
+          class="loader-button-blue"
+          text="Update points"
+          textWhileLoading="Updating"
+          loading={pointsUpdating}
+          onClick={updateTaskPoints}
+          title="Click to fetch the latest points from TIM"
+        />
       {/if}
     </div>
 

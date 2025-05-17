@@ -130,7 +130,7 @@ export default class Tide {
    * Downloads task set from TIM; creates files for each task
    * @param {string} taskSetPath - path to task set. Path can be found by executing cli courses command
    */
-  public static async downloadTaskSet(courseName:string, taskSetPath: string) {
+  public static async downloadTaskSet(courseName: string, courseDir: string, taskSetPath: string) {
     try {
       const downloadPathBase: string | undefined = vscode.workspace
         .getConfiguration()
@@ -140,19 +140,22 @@ export default class Tide {
         return
       }
 
+      // Java kursseille!?
+      // "Demo2"
       const taskName = path.basename(taskSetPath)
+      // "c:\\Users\\patu_\\Ohjelmistoprojekti\\tim_beta_kurssit\\ohjelmointi 2, kevät 2025"
       const localCoursePath = path.join(path.normalize(downloadPathBase), courseName)
-      const localTaskPath = path.join(path.normalize(downloadPathBase), courseName, taskName)
-      await this.runAndHandle(['task', 'create', taskSetPath, '-a', '-d', localCoursePath], (data: string) => {
-          ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, localTaskPath)
-        // TODO: --json flag is not yet implemented in cli tool 
-        // const taskCreationFeedback: TaskCreationFeedback = JSON.parse(data)
-        // if (taskCreationFeedback.success) {
-        //   ExtensionStateManager.setTaskSetDownloadPath(taskSetPath, downloadPath)
-        // } else {
-        //   // TODO: more specific errors from cli
-        //   UiController.showError('Error downloading tasks.')
-        // }
+      // "c:\\Users\\patu_\\Ohjelmistoprojekti\\tim_beta_kurssit\\ohjelmointi 2, kevät 2025\\Demo2"
+      let localTaskPath = ''
+      if (courseDir.length > 0) {
+        localTaskPath = path.join(localCoursePath, courseDir)
+      } else {
+        localTaskPath = path.join(localCoursePath, taskName)
+      }
+      await this.runAndHandle(['task', 'create', taskSetPath, '-a', '-d', localCoursePath, '-j'], (data: string) => {
+        Logger.debug(data)
+        const tasks = JSON.parse(data)
+        ExtensionStateManager.setTaskSetPaths(localTaskPath, taskSetPath, tasks)
       })
     }
     catch (error) {
@@ -168,7 +171,7 @@ export default class Tide {
    */
   public static async overwriteSetTasks(taskSetPath: string) {
     try {
-      this.runAndHandle(['task', 'create', '-a', '-f', taskSetPath], (data: string) => {
+      await this.runAndHandle(['task', 'create', '-a', '-f', taskSetPath], (data: string) => {
         Logger.debug(data)
       })
     }
@@ -186,7 +189,7 @@ export default class Tide {
    */
   public static async overwriteTask(taskSetPath: string, ideTaskId: string, fileLocation: string) {
     try {
-      this.runAndHandle(
+      await this.runAndHandle(
         ['task', 'create', taskSetPath, ideTaskId, '-f', '-d', fileLocation],
         (data: string) => {
           Logger.debug(data)
@@ -206,7 +209,7 @@ export default class Tide {
   public static async resetTask(filePath: string) {
     try {
       vscode.commands.executeCommand('workbench.action.files.save')
-      this.runAndHandle(['task', 'reset', filePath], (data: string) => {
+      await this.runAndHandle(['task', 'reset', filePath], (data: string) => {
         Logger.debug(data)
       })
     }
@@ -223,30 +226,16 @@ export default class Tide {
    */
   public static async submitTask(taskPath: string, callback: () => any) {
     try {
-      Logger.info("The current task is being submitted to TIM. Please wait for the TIM response.")
-      this.runAndHandle(['submit', taskPath], (data: string) => {
+      Logger.info('The current task is being submitted to TIM. Please wait for the TIM response.')
+      await this.runAndHandle(['submit', taskPath], (data: string) => {
         Logger.info(data)
         callback()
-        const downloadPath = Formatting.normalizePath(path.dirname(path.dirname(taskPath)))
-        const course: Course =  ExtensionStateManager.getCourseByDownloadPath(downloadPath)
-        const taskset = course.taskSets.find(taskSet => taskSet.downloadPath === downloadPath)
-        const currentDir = path.dirname(taskPath)
-        // Find the names of the tasks ide_task_id and the task set from the files path
-        let itemPath = currentDir
-        // console.log(path)
-        let pathSplit = itemPath.split(path.sep)
-        // ide_task_id
-        let id = pathSplit.at(-1)
-        // task set name
-        let demo = pathSplit.at(-2)
-        if (demo && id && taskset) {
-          const timData : TimData | undefined = ExtensionStateManager.getTaskTimData(taskset.path, demo, id)
+        const timData : TimData | undefined = ExtensionStateManager.getTimDataByFilepath(taskPath)
           if (timData) {
-            this.getTaskPoints(timData.path, timData.ide_task_id, callback);
+            this.getTaskPoints(timData.path, timData.ide_task_id, callback)
           } else {
-            vscode.window.showErrorMessage('TimData is undefined or invalid.');
+            vscode.window.showErrorMessage('TimData is undefined or invalid.')
           }
-        }
       })
     }catch (error) {
       Logger.error('Error while submitting task: ' + error)
@@ -307,14 +296,14 @@ export default class Tide {
     // Use a copy of process.env to pass custom url to the child process 
     const env_modified = {...process.env}
     
-    let customUrl = vscode.workspace.getConfiguration().get("TIM-IDE.customUrl") as string
-    if (customUrl && customUrl.trim() !== "") {
+    let customUrl = vscode.workspace.getConfiguration().get('TIM-IDE.customUrl') as string
+    if (customUrl && customUrl.trim() !== '') {
       // Ensure that the custom url ends with a slash
-      const formattedUrl = customUrl.trim().endsWith("/") ? customUrl.trim() : customUrl.trim() + "/"
+      const formattedUrl = customUrl.trim().endsWith('/') ? customUrl.trim() : customUrl.trim() + '/'
       env_modified.TIM_URL = formattedUrl
     }
     else {
-      env_modified.TIM_URL = "https://tim.jyu.fi/"
+      env_modified.TIM_URL = 'https://tim.jyu.fi/'
     }
 
     // To run an uncompiled version of the CLI tool:
@@ -326,7 +315,7 @@ export default class Tide {
     const childProcess = cp.spawn(
       vscode.workspace.getConfiguration().get('TIM-IDE.cliPath') as string,
       args,
-      {"env" : env_modified}
+      {'env' : env_modified}
     )
 
     childProcess.stdout.on('data', (data) => {

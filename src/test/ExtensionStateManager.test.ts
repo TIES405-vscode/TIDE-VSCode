@@ -49,9 +49,22 @@ suite('ExtensionStateManager Test Suite', () =>
                 path: 'path/to/taskset1',
                 downloadPath: 'path/to/download1',
                 tasks: [
-                    { doc_id: 101, ide_task_id: 'task1', path: 'path/to/task1', deadline: '2025-10-01', answer_limit: null },
-                    { doc_id: 102, ide_task_id: 'task2', path: 'path/to/task2', deadline: '2025-10-01', answer_limit: 3 }
-                ]
+                    {
+                        doc_id: 101, ide_task_id: 'task1', path: 'path/to/task1', deadline: '2025-10-01', answer_limit: null,
+                        task_files: null,
+                        download_path: undefined,
+                        task_directory: null,
+                        supplementary_files: []
+                    },
+                    {
+                        doc_id: 102, ide_task_id: 'task2', path: 'path/to/task2', deadline: '2025-10-01', answer_limit: 3,
+                        task_files: null,
+                        download_path: undefined,
+                        task_directory: null,
+                        supplementary_files: []
+                    }
+                ],
+                timdataPath: undefined
             },
             {
                 doc_id: 2,
@@ -59,9 +72,22 @@ suite('ExtensionStateManager Test Suite', () =>
                 path: 'path/to/taskset2',
                 downloadPath: 'path/to/download2',
                 tasks: [
-                    { doc_id: 201, ide_task_id: 'task3', path: 'path/to/task3', deadline: null, answer_limit: null },
-                    { doc_id: 202, ide_task_id: 'task4', path: 'path/to/task4', deadline: null, answer_limit: null }
-                ]
+                    {
+                        doc_id: 201, ide_task_id: 'task3', path: 'path/to/task3', deadline: null, answer_limit: null,
+                        task_files: null,
+                        download_path: undefined,
+                        task_directory: null,
+                        supplementary_files: []
+                    },
+                    {
+                        doc_id: 202, ide_task_id: 'task4', path: 'path/to/task4', deadline: null, answer_limit: null,
+                        task_files: null,
+                        download_path: undefined,
+                        task_directory: null,
+                        supplementary_files: []
+                    }
+                ],
+                timdataPath: undefined
             }
         ]
 

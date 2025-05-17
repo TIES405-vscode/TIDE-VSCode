@@ -10,7 +10,7 @@
 			"name": "Stella Palenius"
 		}
 	],
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.99.0"
 	},
@@ -35,22 +35,21 @@
 			"editor/title": [
 				{
 					"command": "tide.resetExercise",
-					"when": "editorFocus",
+					"when": "editorFocus && tide.exerciseActive",
 					"group": "navigation@3"
 				},
 				{
 					"command": "tide.synchronizeSubmission",
-					"when": "editorFocus",
+					"when": "editorFocus && tide.exerciseActive",
 					"group": "navigation@2"
 				},
 				{
 					"command": "tide.submitTask",
-					"when": "editorFocus",
+					"when": "editorFocus && tide.exerciseActive",
 					"group": "navigation@1"
 				},
 				{
 					"command": "tide.timIcon",
-					"when": "editorFocus",
 					"group": "navigation@0"
 				}
 			],
